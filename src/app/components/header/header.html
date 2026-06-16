@@ -1,0 +1,7 @@
+<nav class="navbar" *ngIf="usuario">
+  <div class="logo">Voya<span>ger</span></div>
+  <div class="nav-right">
+    <span class="nav-usuario">Hola, {{ usuario.nombre }}</span>
+    <button class="btn-cerrar" (click)="cerrarSesion()">Cerrar sesión</button>
+  </div>
+</nav>

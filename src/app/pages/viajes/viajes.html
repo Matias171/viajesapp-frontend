@@ -1,0 +1,108 @@
+<nav class="navbar">
+  <div class="nav-logo">Viajes<span>App</span></div>
+  <div class="nav-derecha">
+    <!-- El nombre es un botón que lleva al perfil -->
+    <button class="btn-perfil" routerLink="/perfil">
+      <div class="avatar-mini">{{ usuario?.nombre?.charAt(0)?.toUpperCase() }}</div>
+      {{ usuario?.nombre }}
+    </button>
+    <button class="btn-cerrar" (click)="cerrarSesion()">Cerrar sesión</button>
+  </div>
+</nav>
+
+<div class="contenido">
+  <div class="cabecera-viajes">
+    <h2 class="titulo-viajes">Mis viajes</h2>
+    <button class="btn-nuevo" (click)="mostrarModal = true">+ Nuevo viaje</button>
+  </div>
+
+  <!-- Spinner mientras carga -->
+  <div class="cargando" *ngIf="cargando">
+    <div class="spinner"></div>
+    <p>Cargando viajes...</p>
+  </div>
+
+<!-- Viajes activos -->
+<div class="lista-viajes" *ngIf="!cargando && viajesActivos.length > 0">
+  <div
+    class="viaje-card"
+    *ngFor="let viaje of viajesActivos"
+    (click)="verDetalle(viaje.id)">
+    <div class="card-destino">{{ viaje.destino || 'Sin destino' }}</div>
+    <div class="card-nombre">{{ viaje.nombre }}</div>
+    <div class="card-fechas" *ngIf="viaje.fechaInicio">
+      {{ viaje.fechaInicio }} → {{ viaje.fechaFin }}
+    </div>
+    <button class="btn-completar" (click)="completarViaje(viaje.id, $event)">
+      ✓ Marcar completado
+    </button>
+  </div>
+</div>
+
+<!-- Mensaje vacío solo si no hay ningún viaje -->
+<div class="empty" *ngIf="!cargando && viajes.length === 0">
+  <div class="empty-icono">✈️</div>
+  <p>Todavía no tienes viajes. ¡Crea el primero!</p>
+</div>
+
+<!-- Separador viajes completados -->
+<div *ngIf="!cargando && viajesCompletados.length > 0">
+  <div class="separador-completados">
+    <span>✓ Viajes completados</span>
+  </div>
+  <div class="lista-viajes">
+    <div
+      class="viaje-card viaje-completado"
+      *ngFor="let viaje of viajesCompletados"
+      (click)="verDetalle(viaje.id)">
+      <div class="card-destino">{{ viaje.destino || 'Sin destino' }}</div>
+      <div class="card-nombre">{{ viaje.nombre }}</div>
+      <div class="card-fechas" *ngIf="viaje.fechaInicio">
+        {{ viaje.fechaInicio }} → {{ viaje.fechaFin }}
+      </div>
+      <span class="badge-completado">✓ Completado</span>
+    </div>
+  </div>
+</div>
+
+  <!-- Mensaje vacío -->
+  <div class="empty" *ngIf="!cargando && viajes.length === 0">
+    <div class="empty-icono">✈️</div>
+    <p>Todavía no tienes viajes. ¡Crea el primero!</p>
+  </div>
+</div>
+
+<!-- Modal crear viaje -->
+<div class="modal-overlay" *ngIf="mostrarModal" (click)="mostrarModal = false">
+  <div class="modal-caja" (click)="$event.stopPropagation()">
+    <h3 class="modal-titulo">Nuevo viaje</h3>
+
+    <div class="campo">
+      <label>Nombre del viaje *</label>
+      <input type="text" [(ngModel)]="nuevoViaje.nombre" placeholder="Ej: Roma 2025">
+    </div>
+    <div class="campo">
+      <label>Destino</label>
+      <input type="text" [(ngModel)]="nuevoViaje.destino" placeholder="Ej: Roma, Italia">
+    </div>
+    <div class="campo">
+      <label>Descripción</label>
+      <input type="text" [(ngModel)]="nuevoViaje.descripcion" placeholder="Notas del viaje">
+    </div>
+    <div class="campo">
+      <label for="fechaInicio">Fecha inicio</label>
+      <input type="date" id="fechaInicio" [(ngModel)]="nuevoViaje.fechaInicio">
+    </div>
+    <div class="campo">
+      <label for="fechaFin">Fecha fin</label>
+      <input type="date" id="fechaFin" [(ngModel)]="nuevoViaje.fechaFin">
+    </div>
+
+    <div class="error" *ngIf="errorViaje">{{ errorViaje }}</div>
+
+    <div class="modal-botones">
+      <button class="btn-cancelar" (click)="mostrarModal = false">Cancelar</button>
+      <button class="btn-guardar" (click)="crearViaje()">Crear viaje</button>
+    </div>
+  </div>
+</div>

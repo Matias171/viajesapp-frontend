@@ -1,0 +1,280 @@
+<nav class="navbar">
+  <div class="nav-logo">Viajes<span>App</span></div>
+  <a routerLink="/viajes" class="btn-volver">← Mis viajes</a>
+</nav>
+
+<!-- Spinner mientras carga el viaje -->
+<div class="cargando" *ngIf="cargando">
+  <div class="spinner"></div>
+  <p>Cargando viaje...</p>
+</div>
+
+<div class="contenido">
+
+  <div class="viaje-header">
+    <div class="viaje-destino">{{ viaje?.destino }}</div>
+    <div class="viaje-nombre">{{ viaje?.nombre }}</div>
+    <div class="viaje-fechas" *ngIf="viaje?.fechaInicio">
+      {{ viaje.fechaInicio }} → {{ viaje.fechaFin }}
+    </div>
+    <div class="viaje-desc">{{ viaje?.descripcion }}</div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab" [class.activo]="tabActivo==='participantes'" (click)="cambiarTab('participantes')">👥 Participantes</div>
+    <div class="tab" [class.activo]="tabActivo==='itinerario'" (click)="cambiarTab('itinerario')">🗓️ Itinerario</div>
+    <div class="tab" [class.activo]="tabActivo==='mapa'" (click)="cambiarTab('mapa')">🗺️ Mapa y clima</div>
+    <div class="tab" [class.activo]="tabActivo==='gastos'" (click)="cambiarTab('gastos')">💸 Gastos</div>
+    <div class="tab" [class.activo]="tabActivo==='balance'" (click)="cambiarTab('balance')">📊 Balance</div>
+    <div class="tab" [class.activo]="tabActivo==='deudas'" (click)="cambiarTab('deudas')">🧾 Deudas</div>
+  </div>
+
+  <!-- PARTICIPANTES -->
+  <div class="seccion" *ngIf="tabActivo==='participantes'">
+    <div class="seccion-titulo">
+      Participantes
+      <button class="btn-accion" (click)="mostrarModalParticipante=true">+ Añadir</button>
+    </div>
+    <div class="lista-participantes">
+      <div class="badge-part-wrap" *ngFor="let p of participantes">
+        <span class="badge-part">
+          {{ p.usuario?.nombre }}
+          <!-- Solo muestra X si no es el creador del viaje -->
+          <span
+            class="badge-eliminar"
+            *ngIf="p.usuario?.id !== viaje?.creador?.id"
+            (click)="eliminarParticipante(p.id, p.usuario?.nombre, $event)"
+            title="Eliminar participante">
+            ✕
+          </span>
+          <!-- Corona al creador -->
+          <span class="badge-creador" *ngIf="p.usuario?.id === viaje?.creador?.id" title="Creador del viaje">
+            👑
+          </span>
+        </span>
+      </div>
+      <span *ngIf="participantes.length===0" class="vacio">Sin participantes aún.</span>
+    </div>
+  </div>
+
+  <!-- ITINERARIO -->
+  <div class="seccion" *ngIf="tabActivo==='itinerario'">
+    <div class="seccion-titulo">
+      Itinerario del viaje
+      <button class="btn-accion" (click)="abrirModalActividad()">+ Añadir actividad</button>
+    </div>
+
+    <p class="vacio" *ngIf="diasViaje.length===0">
+      Añade las fechas del viaje para organizar el itinerario día por día, o crea una actividad directamente.
+    </p>
+
+    <div class="itinerario-dia" *ngFor="let dia of diasViaje; let idx = index">
+      <div class="itinerario-dia-titulo">Día {{ idx + 1 }} · {{ dia | date:'dd MMM yyyy' }}</div>
+
+      <div *ngFor="let a of actividadesDelDia(dia)" class="actividad-item">
+        <div class="actividad-hora">{{ a.hora ? a.hora.slice(0,5) : '' }}</div>
+        <div class="actividad-info">
+          <div class="actividad-titulo">{{ a.titulo }}</div>
+          <div class="actividad-lugar" *ngIf="a.lugar">📍 {{ a.lugar }}</div>
+          <div class="actividad-desc" *ngIf="a.descripcion">{{ a.descripcion }}</div>
+        </div>
+        <div class="actividad-acciones">
+          <button class="btn-editar" (click)="abrirModalActividad(a)">Editar</button>
+          <button class="btn-eliminar" (click)="eliminarActividad(a.id)">Eliminar</button>
+        </div>
+      </div>
+
+      <p class="vacio" *ngIf="actividadesDelDia(dia).length===0">Sin actividades planeadas.</p>
+    </div>
+  </div>
+
+  <!-- MAPA Y CLIMA -->
+  <ng-container *ngIf="tabActivo==='mapa'">
+    <div class="seccion">
+      <div class="seccion-titulo">Ubicación del destino</div>
+      <div id="mapa" class="mapa-leaflet">
+        <div class="leaflet-container">...</div>
+      </div>
+    </div>
+
+    <div class="seccion" style="margin-top: 20px">
+      <div class="seccion-titulo">Tiempo en {{ viaje?.destino }}</div>
+
+      <p class="vacio" *ngIf="cargandoClima">Cargando previsión...</p>
+
+      <ng-container *ngIf="!cargandoClima && clima?.disponible">
+        <div class="clima-actual" *ngIf="clima.actual">
+          <div class="clima-actual-icono">{{ clima.actual.icono }}</div>
+          <div>
+            <div class="clima-actual-temp">{{ clima.actual.temperatura | number:'1.0-0' }}°C</div>
+            <div class="clima-actual-desc">{{ clima.actual.descripcion }} · Viento {{ clima.actual.vientoKmh | number:'1.0-0' }} km/h</div>
+          </div>
+        </div>
+        <p class="clima-mensaje" *ngIf="!clima.actual && clima.modo==='historico'">
+          Este viaje ya ha pasado, aquí tienes el tiempo que hubo durante esos días.
+        </p>
+
+        <div class="clima-pronostico" *ngIf="clima.pronostico?.length">
+          <div class="clima-dia" *ngFor="let d of clima.pronostico">
+            <div class="clima-dia-fecha">{{ d.fecha | date:'dd MMM' }}</div>
+            <div class="clima-dia-icono">{{ d.icono }}</div>
+            <div class="clima-dia-temps">{{ d.tempMax | number:'1.0-0' }}° <span>/ {{ d.tempMin | number:'1.0-0' }}°</span></div>
+          </div>
+        </div>
+        <p class="clima-mensaje" *ngIf="!clima.pronostico?.length">No hay datos de tiempo disponibles para las fechas del viaje.</p>
+
+        <p class="clima-aviso" *ngIf="clima.aviso">{{ clima.aviso }}</p>
+      </ng-container>
+
+      <p class="vacio" *ngIf="!cargandoClima && clima && !clima.disponible">{{ clima.mensaje }}</p>
+    </div>
+  </ng-container>
+
+  <!-- GASTOS -->
+  <div class="seccion" *ngIf="tabActivo==='gastos'">
+    <div class="seccion-titulo">
+      Gastos del viaje
+      <button class="btn-accion" (click)="mostrarModalGasto=true">+ Añadir gasto</button>
+    </div>
+    <div *ngFor="let g of gastos" class="gasto-item">
+      <div>
+        <div class="gasto-desc">{{ g.descripcion }}</div>
+        <div class="gasto-pagador">Pagado por {{ g.pagador?.nombre }}</div>
+      </div>
+      <div class="gasto-derecha">
+        <span class="gasto-importe">{{ g.cantidad | number:'1.2-2' }} €</span>
+        <button class="btn-eliminar" (click)="eliminarGasto(g.id)">Eliminar</button>
+      </div>
+    </div>
+    <p class="vacio" *ngIf="gastos.length===0">No hay gastos registrados.</p>
+    <div class="total-row">
+      <span>Total gastado</span>
+      <span class="total-num">{{ totalGastado | number:'1.2-2' }} €</span>
+    </div>
+  </div>
+
+  <!-- BALANCE -->
+  <div class="seccion" *ngIf="tabActivo==='balance'">
+    <div class="seccion-titulo">Balance por persona</div>
+    <div *ngFor="let b of balance" class="balance-item">
+      <span class="balance-nombre">{{ b.nombre }}</span>
+      <span [class.balance-pos]="b.balance>0.01"
+            [class.balance-neg]="b.balance<-0.01"
+            [class.balance-neutro]="b.balance>=-0.01 && b.balance<=0.01">
+        {{ b.balance > 0.01 ? '+' : '' }}{{ b.balance | number:'1.2-2' }} €
+        {{ b.balance > 0.01 ? '(le deben)' : b.balance < -0.01 ? '(debe)' : '(equilibrado)' }}
+      </span>
+    </div>
+    <p class="vacio" *ngIf="balance.length===0">Añade gastos para ver el balance.</p>
+  </div>
+
+  <!-- DEUDAS -->
+  <div class="seccion" *ngIf="tabActivo==='deudas'">
+    <div class="seccion-titulo">Liquidación de deudas</div>
+    <div *ngFor="let d of deudas" class="deuda-item" [class.deuda-pagada]="d.pagada">
+      <div class="deuda-info">
+        <strong class="deudor">{{ d.deudor?.nombre }}</strong>
+        debe a
+        <strong class="acreedor">{{ d.acreedor?.nombre }}</strong>
+      </div>
+      <div class="deuda-derecha">
+        <span class="deuda-cant">{{ d.cantidad | number:'1.2-2' }} €</span>
+        <span class="badge-pagada" *ngIf="d.pagada">✓ Pagada</span>
+        <button class="btn-pagar" *ngIf="!d.pagada" (click)="marcarPagada(d.id)">Marcar pagada</button>
+      </div>
+    </div>
+    <p class="vacio" *ngIf="deudas.length===0">No hay deudas calculadas aún.</p>
+    <button class="btn-calcular" (click)="calcularDeudas()">⚡ Calcular deudas ahora</button>
+  </div>
+
+</div>
+
+<!-- MODAL PARTICIPANTE -->
+<div class="modal-overlay" *ngIf="mostrarModalParticipante" (click)="mostrarModalParticipante=false">
+  <div class="modal-caja" (click)="$event.stopPropagation()">
+    <h3 class="modal-titulo">Añadir participante</h3>
+    <div class="campo">
+      <label>Email del usuario</label>
+      <div class="buscar-row">
+        <input type="email" [(ngModel)]="emailBusqueda" placeholder="correo@ejemplo.com">
+        <button class="btn-accion" (click)="buscarUsuario()">Buscar</button>
+      </div>
+    </div>
+    <div class="usuario-encontrado" *ngIf="usuarioEncontrado">
+      ✓ {{ usuarioEncontrado.nombre }} ({{ usuarioEncontrado.email }})
+      <button class="btn-accion" (click)="confirmarParticipante()">Añadir</button>
+    </div>
+    <div class="error" *ngIf="errorParticipante">{{ errorParticipante }}</div>
+  </div>
+</div>
+
+<!-- MODAL GASTO -->
+<div class="modal-overlay" *ngIf="mostrarModalGasto" (click)="mostrarModalGasto=false">
+  <div class="modal-caja" (click)="$event.stopPropagation()">
+    <h3 class="modal-titulo">Registrar gasto</h3>
+    <div class="campo">
+      <label>Descripción</label>
+      <input type="text" [(ngModel)]="nuevoGasto.descripcion" placeholder="Ej: Cena en restaurante">
+    </div>
+    <div class="campo">
+      <label>Importe (€)</label>
+      <input type="number" [(ngModel)]="nuevoGasto.cantidad" step="0.01" placeholder="0.00">
+    </div>
+    <div class="campo">
+    <label for="pagador">¿Quién pagó?</label>
+    <select id="pagador" [(ngModel)]="nuevoGasto.pagadorId">
+        <option value="">Selecciona un participante</option>
+        <option *ngFor="let p of participantes" [value]="p.usuario?.id">
+        {{ p.usuario?.nombre }}
+        </option>
+    </select>
+    </div>
+    <div class="error" *ngIf="errorGasto">{{ errorGasto }}</div>
+    <div class="modal-botones">
+      <button class="btn-cancelar" (click)="mostrarModalGasto=false">Cancelar</button>
+      <button class="btn-guardar" (click)="registrarGasto()">Guardar gasto</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ACTIVIDAD (ITINERARIO) -->
+<div class="modal-overlay" *ngIf="mostrarModalActividad" (click)="mostrarModalActividad=false">
+  <div class="modal-caja" (click)="$event.stopPropagation()">
+    <h3 class="modal-titulo">{{ nuevaActividad.id ? 'Editar actividad' : 'Añadir actividad' }}</h3>
+
+    <div class="campo-fila">
+      <div class="campo">
+        <label>Día</label>
+        <input type="date" [(ngModel)]="nuevaActividad.dia"
+               [min]="viaje?.fechaInicio" [max]="viaje?.fechaFin">
+      </div>
+      <div class="campo">
+        <label>Hora (opcional)</label>
+        <input type="time" [(ngModel)]="nuevaActividad.hora">
+      </div>
+    </div>
+
+    <div class="campo">
+      <label>Título</label>
+      <input type="text" [(ngModel)]="nuevaActividad.titulo" placeholder="Ej: Visita al Coliseo">
+    </div>
+
+    <div class="campo">
+      <label>Lugar (opcional)</label>
+      <input type="text" [(ngModel)]="nuevaActividad.lugar" placeholder="Ej: Coliseo, Roma">
+      <div class="ayuda">Si lo indicas, intentaremos mostrarlo en el mapa.</div>
+    </div>
+
+    <div class="campo">
+      <label>Descripción (opcional)</label>
+      <textarea [(ngModel)]="nuevaActividad.descripcion" rows="2" placeholder="Notas, horarios, enlaces..."></textarea>
+    </div>
+
+    <div class="error" *ngIf="errorActividad">{{ errorActividad }}</div>
+    <div class="modal-botones">
+      <button class="btn-cancelar" (click)="mostrarModalActividad=false">Cancelar</button>
+      <button class="btn-guardar" (click)="guardarActividad()">Guardar actividad</button>
+    </div>
+  </div>
+</div>

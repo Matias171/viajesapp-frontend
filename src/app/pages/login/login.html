@@ -1,0 +1,41 @@
+<div class="login-wrapper">
+  <div class="login-card">
+
+    <div class="logo">Viajes<span>App</span></div>
+    <p class="subtitulo">Bienvenido de nuevo</p>
+
+    <!-- (keyup.enter) permite hacer login pulsando Enter -->
+    <div class="campo">
+      <label>Email</label>
+      <input
+        type="email"
+        [(ngModel)]="email"
+        placeholder="correo@ejemplo.com"
+        (keyup.enter)="entrar()">
+    </div>
+
+    <div class="campo">
+      <label>Contraseña</label>
+      <input
+        type="password"
+        [(ngModel)]="password"
+        placeholder="Tu contraseña"
+        (keyup.enter)="entrar()">
+    </div>
+
+    <!-- *ngIf muestra este div solo cuando hay un mensaje de error -->
+    <div class="error" *ngIf="error">{{ error }}</div>
+
+    <button class="btn-entrar" (click)="entrar()" [disabled]="cargando">
+      <!-- Muestra texto distinto según si está cargando o no -->
+      {{ cargando ? 'Entrando...' : 'Entrar' }}
+    </button>
+
+    <p class="registro-link">
+      ¿No tienes cuenta?
+      <!-- routerLink es la versión Angular de href para navegar entre páginas -->
+      <a routerLink="/registro">Regístrate</a>
+    </p>
+
+  </div>
+</div>

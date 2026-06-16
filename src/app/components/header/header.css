@@ -1,0 +1,21 @@
+.navbar {
+  background: #1D4E6B;
+  padding: 14px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo { font-family: 'Playfair Display', serif; font-size: 22px; color: white; }
+.logo span { color: #F0A500; }
+.nav-right { display: flex; align-items: center; gap: 16px; }
+.nav-usuario { color: rgba(255,255,255,0.8); font-size: 14px; }
+.btn-cerrar {
+  background: transparent;
+  border: 1.5px solid rgba(255,255,255,0.4);
+  color: white;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.btn-cerrar:hover { background: rgba(255,255,255,0.1); }

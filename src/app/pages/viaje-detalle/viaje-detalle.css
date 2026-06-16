@@ -1,0 +1,180 @@
+.navbar { background: #1D4E6B; padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; }
+.nav-logo { font-family: Georgia, serif; font-size: 22px; color: white; font-weight: 700; }
+.nav-logo span { color: #F0A500; }
+.btn-volver { background: transparent; border: 1.5px solid rgba(255,255,255,0.4); color: white; border-radius: 8px; padding: 6px 14px; font-size: 13px; cursor: pointer; text-decoration: none; }
+.btn-volver:hover { background: rgba(255,255,255,0.1); }
+
+.contenido { max-width: 960px; margin: 36px auto; padding: 0 20px; }
+
+.viaje-header { background: white; border-radius: 16px; padding: 28px 32px; box-shadow: 0 2px 16px rgba(29,78,107,0.08); margin-bottom: 24px; }
+.viaje-destino { font-size: 12px; color: #2E7DA6; text-transform: uppercase; letter-spacing: 1px; }
+.viaje-nombre { font-size: 28px; font-weight: 700; color: #1D4E6B; margin: 4px 0 8px; }
+.viaje-fechas { font-size: 14px; color: #888; }
+.viaje-desc { font-size: 14px; color: #555; margin-top: 8px; }
+
+.tabs { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 2px solid #E8EEF4; }
+.tab { padding: 10px 20px; font-size: 14px; font-weight: 500; color: #888; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: color .2s, border-color .2s; }
+.tab.activo { color: #1D4E6B; border-color: #1D4E6B; }
+.tab:hover { color: #1D4E6B; }
+
+.seccion { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 16px rgba(29,78,107,0.08); }
+.seccion-titulo { font-size: 15px; font-weight: 600; color: #1D4E6B; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+
+.lista-participantes { display: flex; flex-wrap: wrap; gap: 10px; }
+.badge-part { background: #EEF4F8; color: #1D4E6B; border-radius: 20px; padding: 6px 14px; font-size: 13px; font-weight: 500; }
+
+.gasto-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid #F0F4F8; }
+.gasto-item:last-of-type { border-bottom: none; }
+.gasto-desc { font-size: 14px; font-weight: 500; color: #1D4E6B; }
+.gasto-pagador { font-size: 12px; color: #888; margin-top: 2px; }
+.gasto-derecha { display: flex; align-items: center; gap: 12px; }
+.gasto-importe { font-size: 16px; font-weight: 600; color: #1D4E6B; }
+.btn-eliminar { background: #FEF2F2; border: none; color: #E05252; border-radius: 8px; padding: 4px 10px; font-size: 12px; cursor: pointer; }
+.total-row { margin-top: 16px; padding-top: 16px; border-top: 1px solid #F0F4F8; display: flex; justify-content: space-between; }
+.total-num { font-size: 20px; font-weight: 600; color: #1D4E6B; }
+
+.balance-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid #F0F4F8; }
+.balance-nombre { font-size: 14px; font-weight: 500; color: #1D4E6B; }
+.balance-pos { font-size: 15px; font-weight: 600; color: #1D9E75; }
+.balance-neg { font-size: 15px; font-weight: 600; color: #E05252; }
+.balance-neutro { font-size: 15px; font-weight: 600; color: #888; }
+
+.deuda-item { display: flex; align-items: center; justify-content: space-between; padding: 14px; background: #F7F9FC; border-radius: 10px; margin-bottom: 10px; }
+.deuda-pagada { opacity: .5; }
+.deudor { color: #E05252; }
+.acreedor { color: #1D9E75; }
+.deuda-derecha { display: flex; align-items: center; gap: 10px; }
+.deuda-cant { font-size: 15px; font-weight: 600; color: #1D4E6B; }
+.btn-pagar { background: #1D9E75; color: white; border: none; border-radius: 8px; padding: 6px 14px; font-size: 13px; cursor: pointer; }
+.badge-pagada { background: #D1FAE5; color: #1D9E75; border-radius: 20px; padding: 4px 12px; font-size: 12px; }
+.btn-calcular { background: #F0A500; color: white; border: none; border-radius: 10px; padding: 10px 24px; font-size: 14px; font-weight: 500; cursor: pointer; width: 100%; margin-top: 16px; }
+.btn-calcular:hover { background: #d4920a; }
+
+.vacio { color: #aaa; font-size: 14px; }
+
+.btn-accion { background: #1D4E6B; color: white; border: none; border-radius: 10px; padding: 8px 18px; font-size: 13px; font-weight: 500; cursor: pointer; }
+.btn-accion:hover { background: #2E7DA6; }
+
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.modal-caja { background: white; border-radius: 20px; padding: 32px; width: 100%; max-width: 460px; }
+.modal-titulo { font-size: 20px; font-weight: 700; color: #1D4E6B; margin-bottom: 24px; }
+.campo { margin-bottom: 16px; }
+.campo label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: #1D4E6B; }
+.campo input, .campo select, .campo textarea { width: 100%; border: 1.5px solid #E0E7EF; border-radius: 10px; padding: 10px 14px; font-size: 14px; outline: none; font-family: inherit; resize: vertical; }
+.campo-fila { display: flex; gap: 12px; }
+.campo-fila .campo { flex: 1; }
+.ayuda { font-size: 12px; color: #aaa; margin-top: 4px; }
+.buscar-row { display: flex; gap: 8px; }
+.usuario-encontrado { background: #EEF4F8; border-radius: 10px; padding: 12px; font-size: 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.error { background: #FEF2F2; color: #E05252; border-radius: 8px; padding: 10px 14px; font-size: 13px; margin-bottom: 16px; }
+.modal-botones { display: flex; gap: 12px; justify-content: flex-end; margin-top: 8px; }
+.btn-cancelar { background: #F0F4F8; color: #666; border: none; border-radius: 10px; padding: 10px 20px; cursor: pointer; }
+.btn-guardar { background: #1D4E6B; color: white; border: none; border-radius: 10px; padding: 10px 20px; font-weight: 500; cursor: pointer; }
+
+.cargando {
+  text-align: center;
+  padding: 60px 20px;
+  color: #888;
+}
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #E8EEF4;
+  border-top-color: #1D4E6B;
+  border-radius: 50%;
+  animation: girar 0.8s linear infinite;
+  margin: 0 auto 16px;
+}
+@keyframes girar {
+  to { transform: rotate(360deg); }
+}
+
+.badge-part-wrap { display: inline-block; }
+
+.badge-part {
+  background: #EEF4F8;
+  color: #1D4E6B;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.badge-eliminar {
+  cursor: pointer;
+  color: #E05252;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 50%;
+  transition: background .2s;
+}
+.badge-eliminar:hover { background: #FEE2E2; }
+
+.badge-creador { font-size: 12px; }
+
+/* ===================== ITINERARIO ===================== */
+.itinerario-dia { margin-bottom: 22px; }
+.itinerario-dia:last-child { margin-bottom: 0; }
+.itinerario-dia-titulo {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2E7DA6;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #F0F4F8;
+}
+.actividad-item { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid #F7F9FC; }
+.actividad-item:last-child { border-bottom: none; }
+.actividad-hora { flex: 0 0 56px; font-size: 13px; font-weight: 600; color: #1D4E6B; }
+.actividad-info { flex: 1; }
+.actividad-titulo { font-size: 14px; font-weight: 500; color: #1D4E6B; }
+.actividad-lugar { font-size: 12px; color: #2E7DA6; margin-top: 2px; }
+.actividad-desc { font-size: 13px; color: #777; margin-top: 4px; }
+.actividad-acciones { display: flex; gap: 6px; align-items: flex-start; }
+.btn-editar { background: #EEF4F8; border: none; color: #1D4E6B; border-radius: 8px; padding: 4px 10px; font-size: 12px; cursor: pointer; }
+.btn-editar:hover { background: #DCEAF4; }
+
+/* ===================== MAPA Y CLIMA ===================== */
+.mapa-leaflet {
+  height: 320px;
+  width: 100%;
+  border-radius: 12px;
+  position: relative;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.clima-actual {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 16px;
+  background: #EEF4F8;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+.clima-actual-icono { font-size: 40px; }
+.clima-actual-temp { font-size: 28px; font-weight: 600; color: #1D4E6B; }
+.clima-actual-desc { font-size: 13px; color: #777; }
+
+.clima-pronostico { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; }
+.clima-dia {
+  flex: 0 0 auto;
+  min-width: 92px;
+  text-align: center;
+  background: #F7F9FC;
+  border-radius: 12px;
+  padding: 12px 10px;
+}
+.clima-dia-fecha { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: .5px; }
+.clima-dia-icono { font-size: 26px; margin: 6px 0; }
+.clima-dia-temps { font-size: 13px; color: #1D4E6B; font-weight: 500; }
+.clima-dia-temps span { color: #aaa; font-weight: 400; }
+
+.clima-mensaje, .clima-aviso { font-size: 13px; color: #aaa; margin-top: 8px; }

@@ -1,0 +1,8 @@
+<div class="tarjeta">
+  <h3>{{ viaje.nombre }}</h3>
+  <p>{{ viaje.descripcion }}</p>
+  <div class="tarjeta-acciones">
+    <button (click)="verDetalle.emit()">Ver detalle</button>
+    <button (click)="eliminar.emit()">Eliminar</button>
+  </div>
+</div>

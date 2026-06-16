@@ -1,0 +1,130 @@
+<nav class="navbar">
+  <div class="nav-logo">Viajes<span>App</span></div>
+  <button class="btn-volver" (click)="volver()">← Mis viajes</button>
+</nav>
+
+<div class="contenido" *ngIf="!cargando">
+
+  <!-- CABECERA PERFIL -->
+  <div class="perfil-header">
+
+    <!-- Foto de perfil -->
+    <div class="foto-wrap">
+      <img
+        *ngIf="perfil.fotoPerfil"
+        [src]="perfil.fotoPerfil"
+        class="foto-perfil"
+        alt="Foto de perfil">
+      <div class="foto-placeholder" *ngIf="!perfil.fotoPerfil">
+        {{ perfil.nombre?.charAt(0)?.toUpperCase() }}
+      </div>
+    </div>
+
+    <div class="perfil-info">
+      <div class="perfil-nombre">{{ perfil.nombre }}</div>
+      <div class="perfil-apodo" *ngIf="perfil.apodo">@{{ perfil.apodo }}</div>
+      <div class="perfil-bio" *ngIf="perfil.descripcion">{{ perfil.descripcion }}</div>
+    </div>
+
+    <button class="btn-editar" (click)="empezarEdicion()" *ngIf="!editando">
+      ✏️ Editar perfil
+    </button>
+  </div>
+
+  <div class="exito" *ngIf="mensajeExito">{{ mensajeExito }}</div>
+
+  <!-- MODO EDICIÓN -->
+  <div class="seccion" *ngIf="editando">
+    <div class="seccion-titulo">Editar perfil</div>
+
+    <!-- Foto -->
+    <div class="campo">
+      <label>Foto de perfil</label>
+      <div class="foto-editar-wrap">
+        <img *ngIf="perfilEditando.fotoPerfil" [src]="perfilEditando.fotoPerfil" class="foto-preview">
+        <div class="foto-placeholder" *ngIf="!perfilEditando.fotoPerfil">
+          {{ perfil.nombre?.charAt(0)?.toUpperCase() }}
+        </div>
+        <label class="btn-foto" for="inputFoto">📷 Cambiar foto</label>
+        <input type="file" id="inputFoto" accept="image/*" (change)="onFotoSeleccionada($event)" style="display:none">
+      </div>
+    </div>
+
+    <div class="campo">
+      <label>Nombre completo</label>
+      <input type="text" [(ngModel)]="perfilEditando.nombre">
+    </div>
+    <div class="campo">
+      <label>Apodo</label>
+      <input type="text" [(ngModel)]="perfilEditando.apodo" placeholder="Ej: @mati_viajero">
+    </div>
+    <div class="campo">
+      <label>Descripción breve</label>
+      <textarea [(ngModel)]="perfilEditando.descripcion" rows="3" placeholder="Cuéntanos algo sobre ti..."></textarea>
+    </div>
+    <div class="grid-2">
+      <div class="campo">
+        <label>Fecha de nacimiento</label>
+        <input type="text" [(ngModel)]="perfilEditando.fechaNacimiento" placeholder="DD/MM/AAAA">
+      </div>
+      <div class="campo">
+        <label>Teléfono</label>
+        <input type="text" [(ngModel)]="perfilEditando.telefono" placeholder="Ej: 612 345 678">
+      </div>
+    </div>
+    <div class="campo">
+      <label>Dirección</label>
+      <input type="text" [(ngModel)]="perfilEditando.direccion" placeholder="Ej: Madrid, España">
+    </div>
+
+    <div class="error" *ngIf="mensajeError">{{ mensajeError }}</div>
+
+    <div class="modal-botones">
+      <button class="btn-cancelar" (click)="cancelarEdicion()">Cancelar</button>
+      <button class="btn-guardar" (click)="guardarPerfil()">Guardar cambios</button>
+    </div>
+  </div>
+
+  <!-- DATOS DEL PERFIL (modo vista) -->
+  <div class="seccion" *ngIf="!editando">
+    <div class="seccion-titulo">Información personal</div>
+    <div class="datos-grid">
+      <div class="dato-item" *ngIf="perfil.fechaNacimiento">
+        <span class="dato-label">🎂 Fecha de nacimiento</span>
+        <span class="dato-valor">{{ perfil.fechaNacimiento }}
+          <span class="dato-edad" *ngIf="edad">({{ edad }} años)</span>
+        </span>
+      </div>
+      <div class="dato-item" *ngIf="perfil.telefono">
+        <span class="dato-label">📱 Teléfono</span>
+        <span class="dato-valor">{{ perfil.telefono }}</span>
+      </div>
+      <div class="dato-item" *ngIf="perfil.direccion">
+        <span class="dato-label">📍 Dirección</span>
+        <span class="dato-valor">{{ perfil.direccion }}</span>
+      </div>
+      <div class="dato-item" *ngIf="!perfil.fechaNacimiento && !perfil.telefono && !perfil.direccion">
+        <span class="dato-label" style="color:#aaa">No hay información adicional. Pulsa Editar perfil para añadirla.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORIAL DE VIAJES -->
+  <div class="seccion">
+    <div class="seccion-titulo">🗺️ Historial de viajes</div>
+    <div class="historial-item" *ngFor="let v of historial">
+      <span class="historial-nombre">{{ v.nombre }}</span>
+      <span class="historial-meta">
+        {{ v.destino ? v.destino + ' · ' : '' }}{{ v.fechaInicio || 'Sin fecha' }}
+      </span>
+    </div>
+    <p class="vacio" *ngIf="historial.length === 0">Todavía no has participado en ningún viaje.</p>
+  </div>
+
+</div>
+
+<!-- Spinner -->
+<div class="cargando" *ngIf="cargando">
+  <div class="spinner"></div>
+  <p>Cargando perfil...</p>
+</div>
