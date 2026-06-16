@@ -6,7 +6,10 @@ import { environment } from '../../environments/environment';
 export class ApiService {
   // En desarrollo usa '' (vacío) para que el proxy redirija al 8080
   // En producción usa la URL de Railway directamente
-  private url = environment.apiUrl + '/api';
+  private url = (window.location.hostname === 'localhost' 
+  ? '' 
+  : 'https://viajesapp-backend-production.up.railway.app') + '/api';
+  
   constructor(private http: HttpClient) {}
 
   login(email: string, password: string) {
